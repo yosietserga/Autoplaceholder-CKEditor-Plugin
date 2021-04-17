@@ -1,0 +1,2 @@
+# Autoplaceholder CKEditor Plugin
+ 
