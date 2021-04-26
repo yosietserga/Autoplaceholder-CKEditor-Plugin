@@ -115,14 +115,16 @@ class AutoPlaceholderUI extends Plugin {/**
             this.listenTo( dropdownView, 'execute', evt => {
                 register['viewElement'] = null;
                 let customId = 'autoplaceholder_'+generateId();
+                let id = 'autoplaceholder_'+generateId();
                 register['attributes'] = {
                     name:'',
                     defaultValue:'',
                     customId,
+                    id,
                     placeholder:evt.source.commandParam
                 };
 
-                editor.execute( 'autoplaceholder', { defaultValue:'', placeholder: evt.source.commandParam, id:customId } );
+                editor.execute( 'autoplaceholder', { defaultValue:'', placeholder: evt.source.commandParam, id } );
 
                 editor.editing.view.focus();
                 this._showUI( true );
@@ -156,7 +158,7 @@ class AutoPlaceholderUI extends Plugin {/**
             let attributes = register['attributes'];
             attributes['name'] = value;
             attributes['defaultValue'] = value;
-            editor.execute( 'autoplaceholder', { defaultValue:value, placeholder:attributes.placeholder, id:attributes['customId'] } );
+            editor.execute( 'autoplaceholder', { defaultValue:value, placeholder:attributes.placeholder, id:attributes['id'] } );
             this._closeFormView();
         
         } );
@@ -480,7 +482,7 @@ class AutoPlaceholderEditing extends Plugin {
 
         conversion.for( 'dataDowncast' ).add( dispatcher => {
             dispatcher.on('insert:autoplaceholder', (evt, data, conversionApi) => {
-                if (!data.item.getAttribute('customId')) {
+                if (!data.item.getAttribute('id')) {
                     conversionApi.writer.setAttribute('id', 'autoplaceholder_'+generateId(), data.item) 
                 }
             });
@@ -518,11 +520,11 @@ function createAutoPlaceholderView( modelItem, viewWriter ) {
 }
 
 function pushElement( data ) {
-    if (!!data.customId) return false;
+    if (!!data.id) return false;
     let removed = [];
     let elements = [];
     register['elements'].reverse().map( item => { 
-        if (typeof item != 'undefined' && data.getAttribute('customId') != item.getAttribute('customId')) { 
+        if (typeof item != 'undefined' && data.getAttribute('id') != item.getAttribute('id')) { 
             elements.push( item );
         }
     });
